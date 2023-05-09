@@ -1,22 +1,22 @@
-server:
-  port: 8080
-
-spring:
-  # config of data source
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/QA?useUnicode=true&characterEncoding=utf-8
-    username: sk
-    password: password
-
-  jpa:
-    hibernate:
-      # create or update
-      ddl-auto: update
-    # whether to show the sql in terminal
-    show-sql: true
-
-thymeleaf:
-  cache: false
-  prefix:
-    classpath: /templates
+#server:
+#  port: 8080
+#
+#spring:
+#  # config of data source
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/QA?useUnicode=true&characterEncoding=utf-8
+#    username: sk
+#    password: password
+#
+#  jpa:
+#    hibernate:
+#      # create or update
+#      ddl-auto: update
+#    # whether to show the sql in terminal
+#    show-sql: true
+#
+#thymeleaf:
+#  cache: false
+#  prefix:
+#    classpath: /templates
