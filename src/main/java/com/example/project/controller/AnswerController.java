@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/answer")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class AnswerController {
 
     @Autowired

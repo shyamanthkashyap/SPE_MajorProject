@@ -9,12 +9,14 @@ import com.example.project.service.MainCategoryService;
 import com.example.project.service.SubCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/category")
 public class CategoryController {
 
@@ -30,6 +32,7 @@ public class CategoryController {
     }
 
     @GetMapping("/listAll")
+    @PreAuthorize("hasRole('USER')")
     ResponseEntity<List<MainCategory>> getSubCategory(){
         return new ResponseEntity<>(HttpStatus.OK.value(), mainCategoryService.listAllMainCategory());
     }

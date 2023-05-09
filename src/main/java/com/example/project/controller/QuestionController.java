@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/question")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class QuestionController {
 
     @Autowired

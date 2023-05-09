@@ -13,7 +13,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class PageController {
 
     @Autowired
@@ -21,23 +21,23 @@ public class PageController {
     @Autowired
     private UserRegisterFactory userRegisterFactory;
 
-    @PostMapping(value = "/login")
-    @ResponseBody
-    public ResponseEntity<User> login(@RequestBody @Valid User user) {
-        User userLogin = userService.login(user.getUserId(), user.getPwd());
-        if(userLogin!=null){
-            return new ResponseEntity<>(HttpStatus.OK.value(), "login success", userLogin);
-        }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),"No such user or the account sign-in was incorrect");
-    }
+//    @PostMapping(value = "/login")
+//    @ResponseBody
+//    public ResponseEntity<User> login(@RequestBody @Valid User user) {
+//        User userLogin = userService.login(user.getUserId(), user.getPwd());
+//        if(userLogin!=null){
+//            return new ResponseEntity<>(HttpStatus.OK.value(), "login success", userLogin);
+//        }
+//        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),"No such user or the account sign-in was incorrect");
+//    }
 
-    @PostMapping(value = "/register")
-    @ResponseBody
-    public ResponseEntity<User> register(@RequestBody @Valid UserRegisterFactory.UserRegister userRegister){
-        User user = userRegisterFactory.rpoToPojo.apply(userRegister);
-        user = userService.register(user);
-        return new ResponseEntity<>(HttpStatus.OK.value(), "Registration success", user);
-    }
+//    @PostMapping(value = "/register")
+//    @ResponseBody
+//    public ResponseEntity<User> register(@RequestBody @Valid UserRegisterFactory.UserRegister userRegister){
+//        User user = userRegisterFactory.rpoToPojo.apply(userRegister);
+//        user = userService.register(user);
+//        return new ResponseEntity<>(HttpStatus.OK.value(), "Registration success", user);
+//    }
 
     @GetMapping(value = "/signOut")
     public ResponseEntity<Void> signOut(){
