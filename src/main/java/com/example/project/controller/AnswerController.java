@@ -48,19 +48,19 @@ public class AnswerController {
 
     @PostMapping("/post/{id}")
     @ResponseBody
-    public ResponseEntity<Answers> postAnswer(@RequestBody @Valid AnswerPostFactory.AnswerPost answerPost, @PathVariable Long id){
+    public ResponseEntity<Answers> postAnswer(@RequestBody @Valid AnswerPostFactory.AnswerPost answerPost, @PathVariable Integer id){
         Answers answers = answerPostFactory.rpoToPojo.apply(answerPost);
         if(answers.getAnswerBody().length()==0){
             throw new SystemGlobalException("Answer can't be empty");
         }
-        Long userId = id;
+        Integer userId = id;
         answers.setUser(userService.findById(userId));
         answers = answerService.saveNewAnswer(answers);
         return new ResponseEntity<>(HttpStatus.OK.value(), answers);
     }
 
     @GetMapping("/listMyAnswer/{id}")
-    ResponseEntity<List<AnswerDisplayFactory.AnswerDisplay>> listMyAnswers(@PathVariable Long id){
+    ResponseEntity<List<AnswerDisplayFactory.AnswerDisplay>> listMyAnswers(@PathVariable Integer id){
         User user = userService.findById(id);
         List<Answers> answerList = answerService.listMyAnswer(user);
         List<AnswerDisplayFactory.AnswerDisplay> res = answerList.stream().map(answerDisplayFactory.pojoToDTO).collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class AnswerController {
     }
 
     @PostMapping("like/{id}")
-    ResponseEntity<Thumbs> giveLike(@RequestBody @Valid Answers answers, BindingResult bindingResult, @PathVariable Long id){
+    ResponseEntity<Thumbs> giveLike(@RequestBody @Valid Answers answers, BindingResult bindingResult, @PathVariable Integer id){
         User user = userService.findById(id);
         Thumbs thumbs= new Thumbs();
         thumbs.setAnswers(answers);

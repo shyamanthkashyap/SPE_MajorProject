@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User login(Long id, String pwd) {
+    public User login(Integer id, String pwd) {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()){
             throw new SystemGlobalException("No such user");
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(Integer id) {
         return userRepository.getById(id);
     }
 

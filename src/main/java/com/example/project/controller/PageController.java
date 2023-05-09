@@ -46,14 +46,14 @@ public class PageController {
 
     @GetMapping(value = "/userProfile/{id}")
     @ResponseBody
-    public ResponseEntity<User> userProfile(@PathVariable Long id){
+    public ResponseEntity<User> userProfile(@PathVariable Integer id){
         User user = userService.findById(id);
         return new ResponseEntity<>(HttpStatus.OK.value(), "Find user profile success", user);
     }
 
     @PostMapping(value = "updateProfile/{id}")
     @ResponseBody
-    public ResponseEntity<User> updateProfile(@RequestBody @Valid String profile, @PathVariable Long id){
+    public ResponseEntity<User> updateProfile(@RequestBody @Valid String profile, @PathVariable Integer id){
         User user = userService.findById(id);
         user.setProfile(profile);
         user = userService.updateProfile(user);

@@ -49,7 +49,7 @@ public class QuestionController {
 
     @PostMapping(value = "/post/{id}")
     @ResponseBody
-    public ResponseEntity<Questions> register(@RequestBody @Valid QuestionPostFactory.QuestionPost questionPost, @PathVariable Long id){
+    public ResponseEntity<Questions> register(@RequestBody @Valid QuestionPostFactory.QuestionPost questionPost, @PathVariable Integer id){
         Questions questions = questionPostFactory.rpoToPojo.apply(questionPost);
         if(questions.getTitle().length()==0){
             throw new SystemGlobalException("Question Title can't be null");
@@ -72,7 +72,7 @@ public class QuestionController {
     }
 
     @GetMapping("/listMyQuestion/{id}")
-    ResponseEntity<List<Questions>> listMyQuestions(@PathVariable Long id){
+    ResponseEntity<List<Questions>> listMyQuestions(@PathVariable Integer id){
         User user = userService.findById(id);
         List<Questions> questionsList = questionService.listMyQuestions(user);
         return new ResponseEntity<>(HttpStatus.OK.value(), questionsList);

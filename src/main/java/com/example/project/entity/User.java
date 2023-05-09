@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Reference;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,27 +18,42 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private Long userId;
+    private Integer userId;
 
-    @Column(name = "username", columnDefinition = "varchar(21) not null")
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "pwd", columnDefinition = "varchar(32) not null")
+    @Column(name = "pwd")
     private String pwd;
 
-    @Column(name = "profile", columnDefinition = "text")
+    @Column(name = "profile")
     private String profile;
 
-    @Column(name = "points", columnDefinition = "integer default 0")
+    @Column(name = "points")
     private long points;
+
+    @Column(name="email")
+    private String email;
 
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "location_id", insertable = true, updatable = false)
     private Location location;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(  name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-
+    public User(String userName, String password, String email) {
+        this.username = userName;
+        this.pwd = password;
+        this.profile=null;
+        this.points=0;
+        this.location=null;
+        this.email=email;
+    }
 
 }

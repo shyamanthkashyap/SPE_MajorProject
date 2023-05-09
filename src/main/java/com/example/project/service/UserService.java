@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    User login(Long id, String pwd);
+    User login(Integer id, String pwd);
 
     User register(User user);
 
-    User findById(Long id);
+    User findById(Integer id);
 
     User updateProfile(User user);
 }
