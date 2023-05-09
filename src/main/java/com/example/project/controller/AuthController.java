@@ -6,9 +6,11 @@ import com.example.project.Payload.Request.*;
 import com.example.project.entity.response.JwtResponse;
 import com.example.project.entity.response.MessageResponse;
 import com.example.project.entity.response.TokenRefreshResponse;
+import com.example.project.repository.LocationRepository;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.Security.Jwt.JwtUtils;
+import com.example.project.service.LocationService;
 import com.example.project.service.impl.BlacklistService;
 import com.example.project.service.impl.RefreshTokenService;
 import com.example.project.service.impl.UserDetailsImpl;
@@ -44,6 +46,9 @@ public class AuthController {
     RoleRepository roleRepository;
 
     @Autowired
+    LocationService locationService;
+
+    @Autowired
     PasswordEncoder encoder;
 
     @Autowired
@@ -74,8 +79,11 @@ public class AuthController {
         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(userRole);
-
         user.setRoles(roles);
+
+        Location location = locationService.getLocation(userSignUp.getLocationId());
+        user.setLocation(location);
+
         userRepository.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

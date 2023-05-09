@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    User login(Integer id, String pwd);
+//    User login(Integer id, String pwd);
 
-    User register(User user);
+//    User register(User user);
 
     User findById(Integer id);
 

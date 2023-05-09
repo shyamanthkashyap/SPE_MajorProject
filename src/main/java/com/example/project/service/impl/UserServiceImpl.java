@@ -16,25 +16,25 @@ public class UserServiceImpl implements UserService {
 
 
 
-    @Override
-    public User login(Integer id, String pwd) {
-        Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()){
-            throw new SystemGlobalException("No such user");
-        }
+//    @Override
+//    public User login(Integer id, String pwd) {
+//        Optional<User> user = userRepository.findById(id);
+//        if(user.isEmpty()){
+//            throw new SystemGlobalException("No such user");
+//        }
+//
+//        User loginUser = user.get();
+//        if(!pwd.equals(loginUser.getPwd())){
+//            throw new SystemGlobalException("The account sign-in was incorrect");
+//        }
+//        return loginUser;
+//
+//    }
 
-        User loginUser = user.get();
-        if(!pwd.equals(loginUser.getPwd())){
-            throw new SystemGlobalException("The account sign-in was incorrect");
-        }
-        return loginUser;
-
-    }
-
-    @Override
-    public User register(User user) {
-        return userRepository.save(user);
-    }
+//    @Override
+//    public User register(User user) {
+//        return userRepository.save(user);
+//    }
 
     @Override
     public User findById(Integer id) {

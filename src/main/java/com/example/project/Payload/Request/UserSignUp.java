@@ -12,6 +12,9 @@ public class UserSignUp {
 
     @NotBlank
     private String email;
+
+    private Long locationId;
+
     private Set<String> role;
 
     @NotBlank
@@ -48,5 +51,13 @@ public class UserSignUp {
 
     public void setRole(Set<String> role) {
         this.role = role;
+    }
+
+    public Long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
     }
 }
