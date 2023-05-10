@@ -15,3 +15,5 @@ insert into sub_category values (2, "Physics", 2);
 insert into sub_category values (3, "Elections", 3);
 insert into sub_category values (4, "Miscellaneous", 4);
 insert into sub_category values (5, "Football", 5);
+
+insert into role values ("ROLE_USER");
