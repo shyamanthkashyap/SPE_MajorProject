@@ -16,4 +16,4 @@ insert into sub_category values (3, "Elections", 3);
 insert into sub_category values (4, "Miscellaneous", 4);
 insert into sub_category values (5, "Football", 5);
 
-insert into roles values ("ROLE_USER");
+insert into roles values (1, "ROLE_USER");
