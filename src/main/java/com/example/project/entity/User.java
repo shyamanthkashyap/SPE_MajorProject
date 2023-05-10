@@ -50,7 +50,7 @@ public class User {
     public User(String userName, String password, String email) {
         this.username = userName;
         this.pwd = password;
-        this.profile=null;
+        this.profile="user";
         this.points=0;
         this.location=null;
         this.email=email;
