@@ -126,7 +126,7 @@ public class AuthController {
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
     }
 
-    @PostMapping("/user/signout/{user_id}")
+    @GetMapping("/user/signout/{user_id}")
     @PreAuthorize("hasRole('USER')")
     public void signout(@RequestHeader(value="Authorization") String token, @PathVariable Integer user_id) {
         Blacklist blacklist=new Blacklist(token);

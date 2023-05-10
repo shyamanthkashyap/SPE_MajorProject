@@ -39,10 +39,10 @@ public class PageController {
 //        return new ResponseEntity<>(HttpStatus.OK.value(), "Registration success", user);
 //    }
 
-    @GetMapping(value = "/signOut")
-    public ResponseEntity<Void> signOut(){
-        return new ResponseEntity<>(HttpStatus.OK.value(),"Sign out success");
-    }
+//    @GetMapping(value = "/signOut")
+//    public ResponseEntity<Void> signOut(){
+//        return new ResponseEntity<>(HttpStatus.OK.value(),"Sign out success");
+//    }
 
     @GetMapping(value = "/userProfile/{id}")
     @ResponseBody
