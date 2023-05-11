@@ -28,7 +28,7 @@ public class LocationController {
     }
 
     @GetMapping("/city/{country}/{state}")
-    ResponseEntity<List<Location>> getCountry(@PathVariable String country, @PathVariable String state){
+    ResponseEntity<List<Location>> getCities(@PathVariable String country, @PathVariable String state){
         return new ResponseEntity<>(HttpStatus.OK.value(), locationService.getCities(country, state));
     }
 

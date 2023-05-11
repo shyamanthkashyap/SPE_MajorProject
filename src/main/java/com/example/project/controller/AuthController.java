@@ -71,7 +71,6 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: Email already exists"));
         }
-
         // Create new user's account
         User user = new User(userSignUp.getUsername(), encoder.encode(userSignUp.getPassword()),userSignUp.getEmail());
 
@@ -85,6 +84,7 @@ public class AuthController {
         user.setLocation(location);
 
         userRepository.save(user);
+
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 

@@ -32,7 +32,6 @@ public class CategoryController {
     }
 
     @GetMapping("/listAll")
-    @PreAuthorize("hasRole('USER')")
     ResponseEntity<List<MainCategory>> getSubCategory(){
         return new ResponseEntity<>(HttpStatus.OK.value(), mainCategoryService.listAllMainCategory());
     }
