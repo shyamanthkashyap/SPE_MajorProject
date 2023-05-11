@@ -23,7 +23,6 @@ public class Answers {
     private Questions questions;
 
     @ManyToOne
-
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = true, updatable = false)
     private User user;
 
