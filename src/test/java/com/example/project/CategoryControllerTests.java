@@ -37,7 +37,7 @@ public class CategoryControllerTests {
 
     @Test
     @Rollback(value = false)
-    public void GetMainCategory() throws Exception {
+    public void GetSubCategory() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/category/list/"+1L))
                 .andExpect(status().isOk()).andReturn();
         String resultContent = result.getResponse().getContentAsString();
@@ -47,7 +47,7 @@ public class CategoryControllerTests {
 
     @Test
     @Rollback(value = false)
-    public void GetAllCategory() throws Exception {
+    public void GetMainCategory() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/category/listAll"))
                 .andExpect(status().isOk()).andReturn();
         String resultContent = result.getResponse().getContentAsString();

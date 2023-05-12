@@ -3,6 +3,7 @@ package com.example.project;
 import com.example.project.Security.Jwt.JwtUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ class JWTGenerationValidationTests {
     AuthenticationManager authenticationManager;
 
     @Autowired
+    @Mock
     private JwtUtils jwtUtils;
 
     @Autowired

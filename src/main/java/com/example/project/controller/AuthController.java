@@ -14,7 +14,10 @@ import com.example.project.service.LocationService;
 import com.example.project.service.impl.BlacklistService;
 import com.example.project.service.impl.RefreshTokenService;
 import com.example.project.service.impl.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +36,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -59,79 +64,137 @@ public class AuthController {
 
 
     @PostMapping("/user/signup")
-    public ResponseEntity<?> registerUser(@RequestBody UserSignUp userSignUp) {
-        if (userRepository.existsUserByUsername(userSignUp.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+    public ResponseEntity<?> registerUser(@RequestBody UserSignUp userSignUp) throws Exception {
+        try {
+            logger.info("Executing registerUser Endpoint",
+                    "method", "POST",
+                    "path", "/user/signup",
+                    "status", HttpStatus.OK.value()
+            );
+
+            logger.debug("Checking if the username already exists");
+            if (userRepository.existsUserByUsername(userSignUp.getUsername())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Username is already taken!"));
+            }
+
+            logger.debug("Checking if the Email already exists");
+            if (userRepository.existsUsersByEmail(userSignUp.getEmail())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Email already exists"));
+            }
+
+            logger.debug("Creating new user object");
+            // Create new user's account
+            User user = new User(userSignUp.getUsername(), encoder.encode(userSignUp.getPassword()), userSignUp.getEmail());
+
+            Set<Role> roles = new HashSet<>();
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+            user.setRoles(roles);
+
+            Location location = locationService.getLocation(userSignUp.getLocationId());
+            user.setLocation(location);
+
+            logger.debug("Persisting the new User details into database");
+            userRepository.save(user);
+
+            logger.info("User Registered Successfully");
+            return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
         }
-
-        if(userRepository.existsUsersByEmail(userSignUp.getEmail())){
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email already exists"));
+        catch(Exception e){
+            logger.error("Error while Registering User","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            throw new Exception();
         }
-        // Create new user's account
-        User user = new User(userSignUp.getUsername(), encoder.encode(userSignUp.getPassword()),userSignUp.getEmail());
-
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        roles.add(userRole);
-        user.setRoles(roles);
-
-        Location location = locationService.getLocation(userSignUp.getLocationId());
-        user.setLocation(location);
-
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
     @PostMapping("/user/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserLogin userLogin) {
-        System.out.println(userLogin.getUsername()+userLogin.getPassword());
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
+    public ResponseEntity<?> authenticateUser(@RequestBody UserLogin userLogin) throws Exception {
+        try {
+            logger.info("Executing authenticateUser Endpoint",
+                    "method", "POST",
+                    "path", "/user/signin",
+                    "status", HttpStatus.OK.value()
+            );
+            //System.out.println(userLogin.getUsername()+userLogin.getPassword());
+            logger.debug("Authenticating username and password");
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            logger.debug("Generating JWT token");
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+            logger.debug("Authorizing User role");
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+            logger.debug("Creating refresh Token");
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles,
-                refreshToken.getToken()));
+            logger.debug("Returning Response which contains auth token");
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    roles,
+                    refreshToken.getToken()));
+        }
+        catch(Exception e){
+            logger.error("Error Executing Authenticating User","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            throw new Exception();
+        }
     }
 
     @PostMapping("/user/refreshtoken")
-    public ResponseEntity<?> refreshtoken(@RequestBody TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
+    public ResponseEntity<?> refreshtoken(@RequestBody TokenRefreshRequest request) throws Exception {
+        try {
+            logger.info("Executing refreshtoken Endpoint",
+                    "method", "POST",
+                    "path", "/user/refreshtoken",
+                    "status", HttpStatus.OK.value()
+            );
+            String requestRefreshToken = request.getRefreshToken();
 
-        return refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
-                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-                })
-                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
+            logger.debug("Generating new JWT using the refreshToken");
+            return refreshTokenService.findByToken(requestRefreshToken)
+                    .map(refreshTokenService::verifyExpiration)
+                    .map(RefreshToken::getUser)
+                    .map(user -> {
+                        String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+                        return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                    })
+                    .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
+        }
+        catch(Exception e){
+            logger.error("Error Executing JWT generation using RefreshToken","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            throw new Exception();
+        }
     }
 
     @GetMapping("/user/signout/{user_id}")
     @PreAuthorize("hasRole('USER')")
-    public void signout(@RequestHeader(value="Authorization") String token, @PathVariable Integer user_id) {
-        Blacklist blacklist=new Blacklist(token);
-        blacklistService.setToken(blacklist);
-        blacklistService.deleteRefreshTokenUser(user_id);
+    public void signout(@RequestHeader(value="Authorization") String token, @PathVariable Integer user_id) throws Exception {
+        try {
+            logger.info("Executing signout Endpoint",
+                    "method", "GET",
+                    "path", "/user/signout/{user_id}",
+                    "status", HttpStatus.OK.value()
+            );
+            logger.debug("Blacklisting JWT token and deleting refresh token");
+            Blacklist blacklist = new Blacklist(token);
+            blacklistService.setToken(blacklist);
+            blacklistService.deleteRefreshTokenUser(user_id);
+        }
+        catch(Exception e){
+            logger.error("Error while Signing Out","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            throw new Exception();
+        }
     }
 
 }
