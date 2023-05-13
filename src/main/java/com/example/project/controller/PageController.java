@@ -4,8 +4,8 @@ import com.example.project.entity.User;
 import com.example.project.entity.response.ResponseEntity;
 import com.example.project.model.UserRegisterFactory;
 import com.example.project.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -19,7 +19,7 @@ import javax.validation.constraints.Null;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class PageController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PageController.class);
+    private static final Logger logger = LogManager.getLogger(PageController.class);
 
     @Autowired
     private UserService userService;
@@ -29,17 +29,25 @@ public class PageController {
     @GetMapping(value = "/userProfile/{id}")
     @ResponseBody
     public ResponseEntity<User> userProfile(@PathVariable Integer id) throws Exception {
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing userProfile Endpoint\",");
+        reqMessage.append("method = [GET],");
+        reqMessage.append("path = [/userProfile/{id}],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info("Executing userProfile Endpoint",
-                    "method", "GET",
-                    "path", "/userProfile/{id}",
-                    "status", HttpStatus.OK.value()
-            );
+            logger.info(reqMessage);
             User user = userService.findById(id);
             return new ResponseEntity<>(HttpStatus.OK.value(), "Find user profile success", user);
         }
         catch(Exception e){
-            logger.error("Error Executing userProfile","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error Executing userProfile\",");
+            errMessage.append("method = [GET],");
+            errMessage.append("path = [/userProfile/{id}],");
+            errMessage.append("status = "+"ERROR,");
+            errMessage.append("ExceptionMessage = "+e.getMessage());
+            errMessage.append("Stacktrace = "+e.getStackTrace());
+            logger.error(errMessage);
             throw new Exception();
         }
     }
@@ -47,19 +55,27 @@ public class PageController {
     @PostMapping(value = "/updateProfile/{id}")
     @ResponseBody
     public ResponseEntity<User> updateProfile(@RequestBody @Valid String profile, @PathVariable Integer id) throws Exception{
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing updateProfile Endpoint\",");
+        reqMessage.append("method = [POST],");
+        reqMessage.append("path = [/updateProfile/{id}],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info("Executing updateProfile Endpoint",
-                    "method", "POST",
-                    "path", "/updateProfile/{id}",
-                    "status", HttpStatus.OK.value()
-            );
+            logger.info(reqMessage);
             User user = userService.findById(id);
             user.setProfile(profile);
             user = userService.updateProfile(user);
             return new ResponseEntity<>(HttpStatus.OK.value(), "update profile success", user);
         }
         catch (Exception e){
-            logger.error("Error Executing updateProfile","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error Executing updateProfile\",");
+            errMessage.append("method = [POST],");
+            errMessage.append("path = [/updateProfile/{id}],");
+            errMessage.append("status = "+"ERROR,");
+            errMessage.append("ExceptionMessage = "+e.getMessage());
+            errMessage.append("Stacktrace = "+e.getStackTrace());
+            logger.error(errMessage);
             throw new NullPointerException();
         }
     }

@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.NestedServletException;
 
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@Transactional
 public class PageControllerTests {
 
     private MockMvc mockMvc;
@@ -50,7 +52,7 @@ public class PageControllerTests {
     @Rollback(value = false)
     public void UpdateProfile() throws Exception {
         try {
-            MvcResult result = mockMvc.perform(post("/api/user/updateProfile/" + 12).content("Updated User Profile"))
+            MvcResult result = mockMvc.perform(post("/api/user/updateProfile/" + 1).content("Updated User Profile"))
                     .andExpect(status().isOk()).andReturn();
             String resultContent = result.getResponse().getContentAsString();
             System.out.println(resultContent);

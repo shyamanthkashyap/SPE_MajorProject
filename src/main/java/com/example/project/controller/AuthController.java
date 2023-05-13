@@ -14,8 +14,8 @@ import com.example.project.service.LocationService;
 import com.example.project.service.impl.BlacklistService;
 import com.example.project.service.impl.RefreshTokenService;
 import com.example.project.service.impl.UserDetailsImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger logger = LogManager.getLogger(AuthController.class);
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -65,20 +65,19 @@ public class AuthController {
 
     @PostMapping("/user/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserSignUp userSignUp) throws Exception {
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing registerUser Endpoint\",");
+        reqMessage.append("method = [POST],");
+        reqMessage.append("path = [/user/signup],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info("Executing registerUser Endpoint",
-                    "method", "POST",
-                    "path", "/user/signup",
-                    "status", HttpStatus.OK.value()
-            );
-
+            logger.info(reqMessage);
             logger.debug("Checking if the username already exists");
             if (userRepository.existsUserByUsername(userSignUp.getUsername())) {
                 return ResponseEntity
                         .badRequest()
                         .body(new MessageResponse("Error: Username is already taken!"));
             }
-
             logger.debug("Checking if the Email already exists");
             if (userRepository.existsUsersByEmail(userSignUp.getEmail())) {
                 return ResponseEntity
@@ -106,19 +105,27 @@ public class AuthController {
             return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
         }
         catch(Exception e){
-            logger.error("Error while Registering User","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error while Registering User\",");
+            errMessage.append("method = [POST],");
+            errMessage.append("path = [/user/signup],");
+            errMessage.append("status = "+"ERROR,");
+            errMessage.append("ExceptionMessage = "+e.getMessage());
+            errMessage.append("Stacktrace = "+e.getStackTrace());
+            logger.error(errMessage);
             throw new Exception();
         }
     }
 
     @PostMapping("/user/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserLogin userLogin) throws Exception {
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing authenticateUser Endpoint\",");
+        reqMessage.append("method = [POST],");
+        reqMessage.append("path = [/user/signin],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info("Executing authenticateUser Endpoint",
-                    "method", "POST",
-                    "path", "/user/signin",
-                    "status", HttpStatus.OK.value()
-            );
+            logger.info(reqMessage);
             //System.out.println(userLogin.getUsername()+userLogin.getPassword());
             logger.debug("Authenticating username and password");
             Authentication authentication = authenticationManager.authenticate(
@@ -146,19 +153,27 @@ public class AuthController {
                     refreshToken.getToken()));
         }
         catch(Exception e){
-            logger.error("Error Executing Authenticating User","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error Executing Authenticating User\",");
+            errMessage.append("method = [POST],");
+            errMessage.append("path = [/user/signin],");
+            errMessage.append("status = "+"ERROR,");
+            errMessage.append("ExceptionMessage = "+e.getMessage());
+            errMessage.append("Stacktrace = "+e.getStackTrace());
+            logger.error(errMessage);
             throw new Exception();
         }
     }
 
     @PostMapping("/user/refreshtoken")
     public ResponseEntity<?> refreshtoken(@RequestBody TokenRefreshRequest request) throws Exception {
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing refreshtoken Endpoint\",");
+        reqMessage.append("method = [POST],");
+        reqMessage.append("path = [/user/refreshtoken],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info("Executing refreshtoken Endpoint",
-                    "method", "POST",
-                    "path", "/user/refreshtoken",
-                    "status", HttpStatus.OK.value()
-            );
+            logger.info(reqMessage);
             String requestRefreshToken = request.getRefreshToken();
 
             logger.debug("Generating new JWT using the refreshToken");
@@ -172,7 +187,14 @@ public class AuthController {
                     .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
         }
         catch(Exception e){
-            logger.error("Error Executing JWT generation using RefreshToken","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error Executing JWT generation using RefreshToken\",");
+            errMessage.append("method = [POST],");
+            errMessage.append("path = [/user/refreshtoken],");
+            errMessage.append("status = "+"ERROR,");
+            errMessage.append("ExceptionMessage = "+e.getMessage());
+            errMessage.append("Stacktrace = "+e.getStackTrace());
+            logger.error(errMessage);
             throw new Exception();
         }
     }
@@ -180,19 +202,27 @@ public class AuthController {
     @GetMapping("/user/signout/{user_id}")
     @PreAuthorize("hasRole('USER')")
     public void signout(@RequestHeader(value="Authorization") String token, @PathVariable Integer user_id) throws Exception {
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing signout Endpoint\",");
+        reqMessage.append("method = [GET],");
+        reqMessage.append("path = [/user/signout/{user_id}],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info("Executing signout Endpoint",
-                    "method", "GET",
-                    "path", "/user/signout/{user_id}",
-                    "status", HttpStatus.OK.value()
-            );
+            logger.info(reqMessage);
             logger.debug("Blacklisting JWT token and deleting refresh token");
             Blacklist blacklist = new Blacklist(token);
             blacklistService.setToken(blacklist);
             blacklistService.deleteRefreshTokenUser(user_id);
         }
         catch(Exception e){
-            logger.error("Error while Signing Out","status","ERROR","Message",e.getMessage(),"Stacktrace",e.getStackTrace());
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error while Signing Out\",");
+            errMessage.append("method = [GET],");
+            errMessage.append("path = [/user/signout/{user_id}],");
+            errMessage.append("status = "+"ERROR,");
+            errMessage.append("ExceptionMessage = "+e.getMessage());
+            errMessage.append("Stacktrace = "+e.getStackTrace());
+            logger.error(errMessage);
             throw new Exception();
         }
     }
