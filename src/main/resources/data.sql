@@ -16,6 +16,9 @@ insert into sub_category values (3, "Elections", 3);
 insert into sub_category values (4, "Miscellaneous", 4);
 insert into sub_category values (5, "Football", 5);
 
-INSERT INTO roles(name) VALUES('ROLE_USER');
+INSERT INTO roles VALUES(1,'ROLE_USER');
 
-# insert into roles values (1, "ROLE_USER");
+ALTER TABLE questions ADD FULLTEXT(title);
+ALTER TABLE questions ADD FULLTEXT(body);
+ALTER TABLE answers ADD FULLTEXT(answer_body);
+

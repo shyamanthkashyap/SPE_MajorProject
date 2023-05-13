@@ -192,4 +192,15 @@ public class QuestionController {
             throw new Exception();
         }
     }
+
+    @GetMapping("/listRelated/{text}")
+    ResponseEntity<List<QuestionDisplayFactory.QuestionDisplay>> listRelatedQuestion(@PathVariable String text){
+        List<Questions> questions = questionService.listRelatedQuestion(text);
+        List<QuestionDisplayFactory.QuestionDisplay> questionDisplayList = questions.stream().map(questionDisplayFactory.PojoToDTO).collect(Collectors.toList());
+        for(int i=0; i<questionDisplayList.size(); i++){
+            questionDisplayList.get(i).setId(i);
+        }
+        return new ResponseEntity<>(HttpStatus.OK.value(), "Find related questions success", questionDisplayList);
+    }
+
 }

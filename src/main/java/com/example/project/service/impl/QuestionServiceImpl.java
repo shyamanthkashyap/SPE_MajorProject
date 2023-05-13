@@ -42,6 +42,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Questions> listRelatedQuestion(String text) {
+        return questionRepository.findRelatedQuestions(text);
+    }
+
+    @Override
     public List<Questions> listSubCatgoryQuestions(Long ctgyId) {
         return questionRepository.findAllBySubCategoryId(ctgyId);
     }

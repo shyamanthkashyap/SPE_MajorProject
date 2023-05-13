@@ -20,5 +20,7 @@ public interface QuestionService {
 
     List<Questions> listSubCatgoryQuestions(Long ctgyId);
 
+    List<Questions> listRelatedQuestion(String text);
+
     List<Questions> listMyQuestions(User user);
 }
