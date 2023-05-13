@@ -6,9 +6,11 @@ import com.example.project.Payload.Request.UserSignUp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@Transactional
+@FixMethodOrder(MethodSorters.JVM)
 public class AuthControllerTests {
 
     private MockMvc mockMvc;
@@ -43,12 +48,13 @@ public class AuthControllerTests {
     }
 
     @Test
+    @Rollback()
     @Order(1)
     public void UserSignUp() throws Exception {
         UserSignUp userSignUp = new UserSignUp();
         userSignUp.setUsername("Test");
         userSignUp.setPassword("Test");
-        userSignUp.setEmail("Test1@gmail.com");
+        userSignUp.setEmail("Test@gmail.com");
         userSignUp.setLocationId(1L);
         MvcResult result = mockMvc.perform(post("/api/auth/user/signup").content(new ObjectMapper().writeValueAsString(userSignUp)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
@@ -59,12 +65,20 @@ public class AuthControllerTests {
     }
 
     @Test
+    @Rollback()
     @Order(2)
     public void UserSignIn() throws Exception {
+        UserSignUp userSignUp = new UserSignUp();
+        userSignUp.setUsername("Test");
+        userSignUp.setPassword("Test");
+        userSignUp.setEmail("Test@gmail.com");
+        userSignUp.setLocationId(1L);
+        MvcResult result = mockMvc.perform(post("/api/auth/user/signup").content(new ObjectMapper().writeValueAsString(userSignUp)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
         UserLogin userLogin = new UserLogin();
         userLogin.setUsername("Test");
         userLogin.setPassword("Test");
-        MvcResult result = mockMvc.perform(post("/api/auth/user/signin").content(new ObjectMapper().writeValueAsString(userLogin)).contentType(MediaType.APPLICATION_JSON))
+        result = mockMvc.perform(post("/api/auth/user/signin").content(new ObjectMapper().writeValueAsString(userLogin)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         String resultContent = result.getResponse().getContentAsString();
         int n = resultContent.length();
@@ -74,6 +88,7 @@ public class AuthControllerTests {
     }
 
     @Test
+    @Rollback()
     @Order(3)
     public void RefreshToken() throws Exception {
         UserLogin userLogin = new UserLogin();
@@ -97,6 +112,7 @@ public class AuthControllerTests {
     }
 
     @Test
+    @Rollback()
     @Order(4)
     public void SignOut() throws Exception {
         UserLogin userLogin = new UserLogin();
