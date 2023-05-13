@@ -1,6 +1,7 @@
 package com.example.project.controller;
 
 import com.example.project.entity.Questions;
+import com.example.project.entity.Thumbs;
 import com.example.project.entity.User;
 import com.example.project.entity.exception.SystemGlobalException;
 import com.example.project.entity.response.ResponseEntity;
@@ -201,6 +202,23 @@ public class QuestionController {
             questionDisplayList.get(i).setId(i);
         }
         return new ResponseEntity<>(HttpStatus.OK.value(), "Find related questions success", questionDisplayList);
+    }
+
+    @PostMapping("/updateBestAnswer/{questionId}")
+    ResponseEntity<Optional> updateQuestion(@RequestBody Questions question , @PathVariable Long questionId) throws Exception {
+        try{
+            System.out.println("Best Answer called");
+            if(question.getQuestionId()==questionId){
+                questionService.updateBestAnswer(question.getQuestionId(),question.getBestAnswerId());
+                return new ResponseEntity<>(HttpStatus.OK.value(),"Updated Best Answer");
+            }
+            else{
+                throw new Exception("Question and Id doesn't match");
+            }
+        }
+        catch (Exception e){
+            throw new Exception();
+        }
     }
 
 }

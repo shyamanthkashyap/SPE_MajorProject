@@ -55,4 +55,9 @@ public class QuestionServiceImpl implements QuestionService {
     public List<Questions> listMyQuestions(User user) {
         return questionRepository.findAllByUserOrderByPostTimeDesc(user);
     }
+
+    @Override
+    public void updateBestAnswer(Long questionId, Long bestAnswerId) {
+        questionRepository.updateBestAnswer(questionId,bestAnswerId);
+    }
 }

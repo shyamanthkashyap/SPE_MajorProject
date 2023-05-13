@@ -23,4 +23,6 @@ public interface QuestionService {
     List<Questions> listRelatedQuestion(String text);
 
     List<Questions> listMyQuestions(User user);
+
+    void updateBestAnswer(Long questionId, Long bestAnswerId);
 }

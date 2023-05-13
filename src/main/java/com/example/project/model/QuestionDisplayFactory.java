@@ -45,6 +45,8 @@ public class QuestionDisplayFactory {
         @NotNull(message = "postTime can't be blank")
         private java.sql.Timestamp postTime;
 
+        private Long bestAnswerId;
+
     }
 
     public Function<Questions, QuestionDisplay> PojoToDTO = question -> {
@@ -55,6 +57,7 @@ public class QuestionDisplayFactory {
         questionDisplay.setTitle(question.getTitle());
         questionDisplay.setBody(question.getBody());
         questionDisplay.setPostTime(question.getPostTime());
+        questionDisplay.setBestAnswerId(question.getBestAnswerId());
         return questionDisplay;
     };
 

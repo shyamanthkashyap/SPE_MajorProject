@@ -40,6 +40,7 @@ public class QuestionPostFactory {
         questions.setBody(questionPost.getBody());
         questions.setPostTime(new Timestamp(System.currentTimeMillis()));
         questions.setSubCategory(questionPost.getSubCategory());
+        questions.setBestAnswerId(null);
         return questions;
 
 //        Date dt= new Date();

@@ -3,10 +3,13 @@ package com.example.project.repository;
 import com.example.project.entity.Questions;
 import com.example.project.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 public interface QuestionRepository extends JpaRepository<Questions, Long> {
 
     @Query(value = "select *\n" +
@@ -47,4 +50,8 @@ public interface QuestionRepository extends JpaRepository<Questions, Long> {
             "from t4\n" +
             "         join questions on t4.id = questions.question_id order by score desc ;", nativeQuery=true)
     List<Questions> findRelatedQuestions(String text);
+
+    @Modifying
+    @Query(value = "Update questions Set best_answer=:bestAnswerId where question_id=:questionId",nativeQuery = true)
+    void updateBestAnswer(Long questionId, Long bestAnswerId);
 }

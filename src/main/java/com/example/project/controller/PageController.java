@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/user")
@@ -77,6 +78,22 @@ public class PageController {
             errMessage.append("Stacktrace = "+e.getStackTrace());
             logger.error(errMessage);
             throw new NullPointerException();
+        }
+    }
+
+    @GetMapping(value="/updatepoints/{userId}")
+    @ResponseBody
+    public ResponseEntity<Optional> updatePoints(@PathVariable Integer userId) throws Exception {
+        try{
+            User user = userService.findById(userId);
+            Long pts = user.getPoints();
+            pts+=1;
+            user.setPoints(pts);
+            user = userService.updateProfile(user);
+            return new ResponseEntity<>(HttpStatus.OK.value(), "update Points success");
+        }
+        catch(Exception e){
+            throw new Exception();
         }
     }
 
