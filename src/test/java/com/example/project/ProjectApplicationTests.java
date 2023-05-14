@@ -4,12 +4,12 @@ import com.example.project.Payload.Request.TokenRefreshRequest;
 import com.example.project.Payload.Request.UserLogin;
 import com.example.project.Payload.Request.UserSignUp;
 import com.example.project.Security.Jwt.JwtUtils;
-import com.example.project.entity.*;
-import com.example.project.model.AnswerPostFactory;
-import com.example.project.model.QuestionPostFactory;
-import com.example.project.service.AnswerService;
-import com.example.project.service.QuestionService;
-import com.example.project.service.UserService;
+import com.example.project.Entity.*;
+import com.example.project.Model.AnswerPostFactory;
+import com.example.project.Model.QuestionPostFactory;
+import com.example.project.Service.AnswerService;
+import com.example.project.Service.QuestionService;
+import com.example.project.Service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -273,7 +273,7 @@ public class ProjectApplicationTests {
             String Expected = "update profile success";
             Assert.assertEquals(Expected,resultContent);
         }catch (Exception e){
-            System.out.println("ran exception");
+            System.out.println("ran Exception");
             Assert.assertFalse(e instanceof Exception);
         }
     }

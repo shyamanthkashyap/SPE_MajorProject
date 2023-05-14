@@ -1,7 +1,7 @@
 package com.example.project.Security.Jwt;
 
 
-import com.example.project.service.impl.UserDetailsServiceImpl;
+import com.example.project.Service.Impl.UserDetailsServiceImpl;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
