@@ -42,6 +42,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Questions> listRelatedQuestion(String text) {
+        return questionRepository.findRelatedQuestions(text);
+    }
+
+    @Override
     public List<Questions> listSubCatgoryQuestions(Long ctgyId) {
         return questionRepository.findAllBySubCategoryId(ctgyId);
     }
@@ -49,5 +54,10 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Questions> listMyQuestions(User user) {
         return questionRepository.findAllByUserOrderByPostTimeDesc(user);
+    }
+
+    @Override
+    public void updateBestAnswer(Long questionId, Long bestAnswerId) {
+        questionRepository.updateBestAnswer(questionId,bestAnswerId);
     }
 }

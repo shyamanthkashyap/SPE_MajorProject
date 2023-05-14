@@ -35,5 +35,6 @@ public class Questions {
     @Column(name ="post_time", columnDefinition = "datetime not null")
     private java.sql.Timestamp postTime;
 
-
+    @Column(name = "best_answer")
+    private Long bestAnswerId;
 }
