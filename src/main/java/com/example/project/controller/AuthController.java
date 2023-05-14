@@ -71,7 +71,6 @@ public class AuthController {
         reqMessage.append("path = [/user/signup],");
         reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info(reqMessage);
             logger.debug("Checking if the username already exists");
             if (userRepository.existsUserByUsername(userSignUp.getUsername())) {
                 return ResponseEntity
@@ -101,7 +100,7 @@ public class AuthController {
             logger.debug("Persisting the new User details into database");
             userRepository.save(user);
 
-            logger.info("User Registered Successfully");
+            logger.info(reqMessage);
             return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
         }
         catch(Exception e){
@@ -109,9 +108,8 @@ public class AuthController {
             errMessage.append("Message = \"Error while Registering User\",");
             errMessage.append("method = [POST],");
             errMessage.append("path = [/user/signup],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -125,7 +123,6 @@ public class AuthController {
         reqMessage.append("path = [/user/signin],");
         reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info(reqMessage);
             //System.out.println(userLogin.getUsername()+userLogin.getPassword());
             logger.debug("Authenticating username and password");
             Authentication authentication = authenticationManager.authenticate(
@@ -145,6 +142,7 @@ public class AuthController {
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
             logger.debug("Returning Response which contains auth token");
+            logger.info(reqMessage);
             return ResponseEntity.ok(new JwtResponse(jwt,
                     userDetails.getId(),
                     userDetails.getUsername(),
@@ -157,9 +155,8 @@ public class AuthController {
             errMessage.append("Message = \"Error Executing Authenticating User\",");
             errMessage.append("method = [POST],");
             errMessage.append("path = [/user/signin],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -173,10 +170,10 @@ public class AuthController {
         reqMessage.append("path = [/user/refreshtoken],");
         reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info(reqMessage);
             String requestRefreshToken = request.getRefreshToken();
 
             logger.debug("Generating new JWT using the refreshToken");
+            logger.info(reqMessage);
             return refreshTokenService.findByToken(requestRefreshToken)
                     .map(refreshTokenService::verifyExpiration)
                     .map(RefreshToken::getUser)
@@ -191,9 +188,8 @@ public class AuthController {
             errMessage.append("Message = \"Error Executing JWT generation using RefreshToken\",");
             errMessage.append("method = [POST],");
             errMessage.append("path = [/user/refreshtoken],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -219,9 +215,8 @@ public class AuthController {
             errMessage.append("Message = \"Error while Signing Out\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/user/signout/{user_id}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }

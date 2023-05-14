@@ -45,9 +45,8 @@ public class CategoryController {
             errMessage.append("Message = \"Error Executing getSubCategory\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/list/{id}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -69,9 +68,8 @@ public class CategoryController {
             errMessage.append("Message = \"Error Executing getMainCategory\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/listAll],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
