@@ -1,7 +1,7 @@
 package com.example.project.Security.Jwt;
 
-import com.example.project.service.impl.BlacklistService;
-import com.example.project.service.impl.UserDetailsImpl;
+import com.example.project.Service.Impl.BlacklistService;
+import com.example.project.Service.Impl.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
