@@ -45,9 +45,8 @@ public class PageController {
             errMessage.append("Message = \"Error Executing userProfile\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/userProfile/{id}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -73,26 +72,38 @@ public class PageController {
             errMessage.append("Message = \"Error Executing updateProfile\",");
             errMessage.append("method = [POST],");
             errMessage.append("path = [/updateProfile/{id}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new NullPointerException();
         }
     }
 
+
     @GetMapping(value="/updatepoints/{userId}")
     @ResponseBody
     public ResponseEntity<Optional> updatePoints(@PathVariable Integer userId) throws Exception {
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing updatePoints Endpoint\",");
+        reqMessage.append("method = [GET],");
+        reqMessage.append("path = [/updatepoints/{userId}],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try{
             User user = userService.findById(userId);
             Long pts = user.getPoints();
             pts+=1;
             user.setPoints(pts);
             user = userService.updateProfile(user);
+            logger.info(reqMessage);
             return new ResponseEntity<>(HttpStatus.OK.value(), "update Points success");
         }
         catch(Exception e){
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error Executing updatePoints\",");
+            errMessage.append("method = [GET],");
+            errMessage.append("path = [/updatepoints/{userId}],");
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             throw new Exception();
         }
     }

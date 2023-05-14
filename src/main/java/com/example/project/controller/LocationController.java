@@ -37,9 +37,8 @@ public class LocationController {
             errMessage.append("Message = \"Error Executing getState\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/state/{country}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -61,9 +60,8 @@ public class LocationController {
             errMessage.append("Message = \"Error Executing getCountry\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/country],");
-            errMessage.append("status = "+"ERROR,");
+            errMessage.append("status = "+500);
             errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -85,9 +83,8 @@ public class LocationController {
             errMessage.append("Message = \"Error Executing getCities\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/city/{country}/{state}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }

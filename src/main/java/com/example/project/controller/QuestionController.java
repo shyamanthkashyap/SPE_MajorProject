@@ -40,12 +40,13 @@ public class QuestionController {
     @GetMapping("/listAll")
     @ResponseBody
     ResponseEntity<List<Questions>> listAll() throws Exception{
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing listAll Endpoint\",");
+        reqMessage.append("method = [GET],");
+        reqMessage.append("path = [/listAll],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try {
-            logger.info("Executing listAll Endpoint",
-                    "method", "GET",
-                    "path", "/listAll",
-                    "status", HttpStatus.OK.value()
-            );
+            logger.info(reqMessage);
             List<Questions> questionsList = questionService.listAll();
             return new ResponseEntity<>(HttpStatus.OK.value(), "Find all questions success", questionsList);
         }
@@ -54,9 +55,8 @@ public class QuestionController {
             errMessage.append("Message = \"Error Executing listAll\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/listAll],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -79,9 +79,8 @@ public class QuestionController {
             errMessage.append("Message = \"Error Executing listQuestion\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/list/{questionId}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -135,9 +134,8 @@ public class QuestionController {
             errMessage.append("Message = \"Error Executing listCategoryQuestion\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/listCategory/{ctgyId}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -160,9 +158,8 @@ public class QuestionController {
             errMessage.append("Message = \"Error Executing listSubCategoryQuestion\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/listSubCategory/{ctgyId}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
@@ -186,30 +183,54 @@ public class QuestionController {
             errMessage.append("Message = \"Error Executing listMyQuestions\",");
             errMessage.append("method = [GET],");
             errMessage.append("path = [/listMyQuestion/{id}],");
-            errMessage.append("status = "+"ERROR,");
-            errMessage.append("ExceptionMessage = "+e.getMessage());
-            errMessage.append("Stacktrace = "+e.getStackTrace());
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
             logger.error(errMessage);
             throw new Exception();
         }
     }
 
     @GetMapping("/listRelated/{text}")
-    ResponseEntity<List<QuestionDisplayFactory.QuestionDisplay>> listRelatedQuestion(@PathVariable String text){
-        List<Questions> questions = questionService.listRelatedQuestion(text);
-        List<QuestionDisplayFactory.QuestionDisplay> questionDisplayList = questions.stream().map(questionDisplayFactory.PojoToDTO).collect(Collectors.toList());
-        for(int i=0; i<questionDisplayList.size(); i++){
-            questionDisplayList.get(i).setId(i);
+    ResponseEntity<List<QuestionDisplayFactory.QuestionDisplay>> listRelatedQuestion(@PathVariable String text) throws Exception{
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing listRelatedQuestions Endpoint\",");
+        reqMessage.append("method = [GET],");
+        reqMessage.append("path = [/listRelated/{text}],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
+        try {
+            List<Questions> questions = questionService.listRelatedQuestion(text);
+            List<QuestionDisplayFactory.QuestionDisplay> questionDisplayList = questions.stream().map(questionDisplayFactory.PojoToDTO).collect(Collectors.toList());
+            for (int i = 0; i < questionDisplayList.size(); i++) {
+                questionDisplayList.get(i).setId(i);
+            }
+            logger.info(reqMessage);
+            return new ResponseEntity<>(HttpStatus.OK.value(), "Find related questions success", questionDisplayList);
         }
-        return new ResponseEntity<>(HttpStatus.OK.value(), "Find related questions success", questionDisplayList);
+        catch(Exception e){
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error Executing listRelatedQuestions\",");
+            errMessage.append("method = [GET],");
+            errMessage.append("path = [/listRelated/{text}],");
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
+            logger.error(errMessage);
+            throw new Exception();
+        }
     }
 
+
     @PostMapping("/updateBestAnswer/{questionId}")
-    ResponseEntity<Optional> updateQuestion(@RequestBody Questions question , @PathVariable Long questionId) throws Exception {
+    ResponseEntity<Optional> updateBestAnswer(@RequestBody Questions question , @PathVariable Long questionId) throws Exception {
+        StringBuilder reqMessage = new StringBuilder();
+        reqMessage.append("Message = \"Executing updateBestAnswer Endpoint\",");
+        reqMessage.append("method = [POST],");
+        reqMessage.append("path = [/updateBestAnswer/{questionId}],");
+        reqMessage.append("status = "+HttpStatus.OK.value());
         try{
             System.out.println("Best Answer called");
             if(question.getQuestionId()==questionId){
                 questionService.updateBestAnswer(question.getQuestionId(),question.getBestAnswerId());
+                logger.info(reqMessage);
                 return new ResponseEntity<>(HttpStatus.OK.value(),"Updated Best Answer");
             }
             else{
@@ -217,6 +238,13 @@ public class QuestionController {
             }
         }
         catch (Exception e){
+            StringBuilder errMessage = new StringBuilder();
+            errMessage.append("Message = \"Error Executing updateBestAnswer\",");
+            errMessage.append("method = [POST],");
+            errMessage.append("path = [/updateBestAnswer/{questionId}],");
+            errMessage.append("status = "+500);
+            errMessage.append(",ExceptionMessage = "+e.getMessage());
+            logger.error(errMessage);
             throw new Exception();
         }
     }

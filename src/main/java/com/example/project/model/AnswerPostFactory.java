@@ -3,8 +3,10 @@ package com.example.project.model;
 
 import com.example.project.entity.Answers;
 import com.example.project.entity.Questions;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotBlank;
@@ -18,6 +20,8 @@ public class AnswerPostFactory{
 
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AnswerPost implements Serializable{
 
         @NotBlank(message = "Answer can't be empty")
